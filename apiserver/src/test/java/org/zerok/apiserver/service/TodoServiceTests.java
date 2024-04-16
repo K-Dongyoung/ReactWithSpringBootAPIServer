@@ -39,7 +39,8 @@ public class TodoServiceTests {
 
     @Test
     public void temp() {
-        log.info((int)Math.ceil(126 / 10.0));
+//        log.info((int)Math.ceil(126 / 10.0));
+        log.info((int)Math.ceil(26 / 10.0) * 10);
     }
 
 }
