@@ -1,6 +1,8 @@
 package org.zerok.apiserver.service;
 
 import org.zerok.apiserver.domain.Todo;
+import org.zerok.apiserver.dto.PageRequestDTO;
+import org.zerok.apiserver.dto.PageResponseDTO;
 import org.zerok.apiserver.dto.TodoDTO;
 
 public interface TodoService {
@@ -12,6 +14,8 @@ public interface TodoService {
     void modify(TodoDTO dto);
 
     void remove(Long tno);
+
+    PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO);
 
     default TodoDTO entityToDTO(Todo todo) {
 

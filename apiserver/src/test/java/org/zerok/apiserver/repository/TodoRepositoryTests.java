@@ -31,11 +31,11 @@ public class TodoRepositoryTests {
     @Test
     public void testInsert() {
 
-        for (int i = 1; i < 100; i++) {
+        for (int i = 0; i < 100; i++) {
             Todo todo = Todo.builder()
                     .title("Title.." + i)
                     .content("Content..." + i)
-                    .dueDate(LocalDate.of(2024, 04, 11))
+                    .dueDate(LocalDate.of(2024, 04, 16))
                     .build();
 
             Todo result = todoRepository.save(todo);
@@ -88,9 +88,9 @@ public class TodoRepositoryTests {
         log.info(result.getContent());
     }
 
-    @Test
-    public void testSearch1() {
-        todoRepository.search1();
-    }
+//    @Test
+//    public void testSearch1() {
+//        todoRepository.search1();
+//    }
 
 }

@@ -2,12 +2,18 @@ package org.zerok.apiserver.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.zerok.apiserver.domain.Todo;
+import org.zerok.apiserver.dto.PageRequestDTO;
+import org.zerok.apiserver.dto.PageResponseDTO;
 import org.zerok.apiserver.dto.TodoDTO;
 import org.zerok.apiserver.repository.TodoRepository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @Log4j2
@@ -56,6 +62,23 @@ public class TodoServiceImpl implements TodoService{
     public void remove(Long tno) {
 
         todoRepository.deleteById(tno);
+    }
+
+    @Override
+    public PageResponseDTO<TodoDTO> getList(PageRequestDTO pageRequestDTO) {
+
+        Page<Todo> result = todoRepository.search1(pageRequestDTO);
+
+        List<TodoDTO> dtoList = result.get().map(this::entityToDTO).toList();
+
+        PageResponseDTO<TodoDTO> responseDTO =
+                PageResponseDTO.<TodoDTO>withAll()
+                        .dtoList(dtoList)
+                        .pageRequestDTO(pageRequestDTO)
+                        .total(result.getTotalElements())
+                        .build();
+
+        return responseDTO;
     }
 
 }
