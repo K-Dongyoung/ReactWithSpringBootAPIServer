@@ -1,4 +1,4 @@
-package org.zerok.apiserver.advice;
+package org.zerok.apiserver.controller.advice;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

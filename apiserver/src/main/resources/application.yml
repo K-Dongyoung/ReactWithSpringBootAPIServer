@@ -11,8 +11,16 @@ spring:
     properties:
       hibernate:
         format_sql: true
+  servlet:
+    multipart:
+      max-request-size: 30MB
+      max-file-size: 10MB
 
 logging:
   level:
     sql: info
 
+org:
+  zerock:
+    upload:
+      path: upload
