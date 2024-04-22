@@ -21,7 +21,7 @@ import lombok.ToString;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(exclude = "")
+@ToString(exclude = "imageList")
 public class Product {
 
 	@Id
@@ -50,5 +50,28 @@ public class Product {
 
 	public void changeName(String name) {
 		this.pname = name;
+	}
+
+	public void changeDelFlag(boolean delFlag) {
+		this.delFlag = delFlag;
+	}
+
+	public void addImage(ProductImage image) {
+		image.setOrd(imageList.size());
+		imageList.add(image);
+	}
+
+	public void addImageString(String fileName) {
+
+		ProductImage productImage = ProductImage.builder()
+				.fileName(fileName)
+				.build();
+
+		addImage(productImage);
+
+	}
+
+	public void clearList() {
+		this.imageList.clear();
 	}
 }
