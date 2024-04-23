@@ -5,10 +5,16 @@ import lombok.extern.log4j.Log4j2;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Commit;
 import org.springframework.transaction.annotation.Transactional;
 import org.zerok.apiserver.domain.Product;
+import org.zerok.apiserver.dto.PageRequestDTO;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -22,13 +28,17 @@ public class ProductRepositoryTests {
     @Test
     public void testInsert() {
 
-        Product product = Product.builder().pname("Test ").pdesc("Test Desc").price(1000).build();
+        for (int i = 0; i < 10; i++) {
 
-        product.addImageString(UUID.randomUUID() + "_" + "Image1.jpg");
+            Product product = Product.builder().pname("Test" + i).pdesc("Test Desc").price(1000).build();
 
-        product.addImageString(UUID.randomUUID() + "_" + "Image2.jpg");
+            product.addImageString(UUID.randomUUID() + "_" + "Image1.jpg");
 
-        productRepository.save(product);
+            product.addImageString(UUID.randomUUID() + "_" + "Image2.jpg");
+
+            productRepository.save(product);
+
+        }
 
     }
 
@@ -68,4 +78,44 @@ public class ProductRepositoryTests {
 
         productRepository.updateToDelete(pno, true);
     }
+
+    @Test
+    public void testUpdate() {
+
+        Product product = productRepository.selectOne(1L).get();
+
+        product.changePrice(3000);
+
+        product.clearList();
+
+        product.addImageString(UUID.randomUUID() + "_" + "PImage1.jpg");
+
+        product.addImageString(UUID.randomUUID() + "_" + "PImage2.jpg");
+
+        product.addImageString(UUID.randomUUID() + "_" + "PImage3.jpg");
+
+        productRepository.save(product);
+
+    }
+
+    @Test
+    public void testList() {
+
+        Pageable pageable = PageRequest.of(0, 10, Sort.by("pno").descending());
+
+        Page<Object[]> result = productRepository.selectList(pageable);
+
+        result.getContent().forEach(arr -> log.info(Arrays.toString(arr)));
+
+    }
+
+    @Test
+    public void testSearch() {
+
+        PageRequestDTO pageRequestDTO = PageRequestDTO.builder().build();
+
+        productRepository.searchList(pageRequestDTO);
+
+    }
+
 }
