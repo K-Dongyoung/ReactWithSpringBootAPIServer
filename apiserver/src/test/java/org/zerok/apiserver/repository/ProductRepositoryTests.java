@@ -69,14 +69,28 @@ public class ProductRepositoryTests {
         log.info(product.getImageList());
     }
 
+    // DB 호출 한번에 할 수 있음.
     @Commit
     @Transactional
     @Test
     public void testDelete() {
 
-        Long pno = 2L;
+        Long pno = 1L;
 
-        productRepository.updateToDelete(pno, true);
+        productRepository.updateToDelete(pno, false);
+    }
+
+    //DB 호출 세 번 해야함 -> DB가 멀리 있으면 오래 걸림!!
+    @Test
+    public void testDelete2() {
+
+        Long pno = 1L;
+
+        Product product = productRepository.findById(pno).orElseThrow();
+
+        product.changeDelFlag(false);
+
+        productRepository.save(product);
     }
 
     @Test
