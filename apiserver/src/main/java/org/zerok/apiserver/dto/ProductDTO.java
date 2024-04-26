@@ -26,9 +26,9 @@ public class ProductDTO {
     private boolean delFlag;
 
     @Builder.Default
-    private List<MultipartFile> files = new ArrayList<>();
+    private List<MultipartFile> files = new ArrayList<>(); // 실제로 받는 파일
 
     @Builder.Default
-    private List<String> uploadedFileNames = new ArrayList<>();
+    private List<String> uploadFileNames = new ArrayList<>(); // 디비에 있는 파일 이름 목록
 
 }
