@@ -6,12 +6,7 @@ import lombok.extern.log4j.Log4j2;
 
 import org.springframework.core.io.Resource;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.zerok.apiserver.dto.PageRequestDTO;
 import org.zerok.apiserver.dto.PageResponseDTO;
@@ -21,6 +16,7 @@ import org.zerok.apiserver.util.CustomFileUtil;
 
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @Log4j2
@@ -87,6 +83,47 @@ public class ProductController {
     @PutMapping("/{pno}")
     public Map<String, String> modify(@PathVariable("pno") Long pno, ProductDTO productDTO) {
 
-        return
+        productDTO.setPno(pno);
+
+        ProductDTO oldProductDTO = productService.get(pno);
+
+        List<MultipartFile> files = productDTO.getFiles();
+        List<String> currentUploadFileNames = fileUtil.saveFiles(files);
+
+        List<String> uploadedFileNames = productDTO.getUploadFileNames();
+
+        if (currentUploadFileNames != null && !currentUploadFileNames.isEmpty()) {
+
+            uploadedFileNames.addAll(currentUploadFileNames);
+
+        }
+
+        productService.modify(productDTO);
+
+        List<String> oldFileNames = oldProductDTO.getUploadFileNames();
+        if( oldFileNames != null && !oldFileNames.isEmpty()) {
+
+            List<String> removeFiles = oldFileNames.stream().filter(fileName -> !uploadedFileNames.contains(fileName)).collect(Collectors.toList());
+
+            fileUtil.deleteFiles(removeFiles);
+
+        }
+
+
+        return Map.of("RESULT", "SUCCESS");
     }
+
+    @DeleteMapping("/{pno}")
+    public Map<String, String> remove(@PathVariable Long pno) {
+
+        List<String> oldFileNames = productService.get(pno).getUploadFileNames();
+
+        productService.remove(pno);
+
+        fileUtil.deleteFiles(oldFileNames);
+
+        return Map.of("RESULT", "SUCCESS");
+
+    }
+
 }

@@ -71,9 +71,7 @@ public class ProductServiceImpl implements ProductService {
 		log.info(product);
 		log.info(product.getImageList());
 
-		Long pno = productRepository.save(product).getPno();
-
-		return pno;
+        return productRepository.save(product).getPno();
 	}
 
 	@Override
@@ -107,6 +105,13 @@ public class ProductServiceImpl implements ProductService {
 		}
 
 		productRepository.save(product);
+
+	}
+
+	@Override
+	public void remove(Long pno) {
+
+		productRepository.deleteById(pno);
 
 	}
 
@@ -144,13 +149,11 @@ public class ProductServiceImpl implements ProductService {
 
 		List<String> uploadFileNames = productDTO.getUploadFileNames();
 
-		if (uploadFileNames == null || uploadFileNames.size() == 0) {
+		if (uploadFileNames == null || uploadFileNames.isEmpty()) {
 			return product;
 		}
 
-		uploadFileNames.forEach(fileName -> {
-			product.addImageString(fileName);
-		});
+		uploadFileNames.forEach(product::addImageString);
 
 		return product;
 
